@@ -27,9 +27,11 @@ async function backup() {
       oldBackupPath = config.autoBackupPath + '/' + formatYYYYMMDD(beforeDate); // old backup(after keeping # of days)
     }
 
+    // create backup file
     const cmd = getMongodumpCMD(newBackupPath);
     await runCommand(cmd);
 
+    // create zip file and remove old file
     const zipPath = await zipFolderPromise(newBackupPath);
     await runCommand(`rm -rf ${newBackupPath}`);
 
@@ -39,6 +41,7 @@ async function backup() {
       }
     }
 
+    // handle google drive
     const auth = await authorize();
     const filedId = await uploadFile(auth, zipPath);
     console.log(
@@ -50,6 +53,10 @@ async function backup() {
   }
 }
 
+/**
+ * 
+ * @param {string} output output folder
+ */
 function getMongodumpCMD(output) {
   let cmd = `mongodump --host ${config.host} --port ${config.port}`;
   if (config.user) cmd += ` --username ${config.user}`;
@@ -59,6 +66,10 @@ function getMongodumpCMD(output) {
   return cmd;
 }
 
+/**
+ * 
+ * @param {Date} date
+ */
 function formatYYYYMMDD(date) {
   return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
 }
@@ -69,11 +80,15 @@ function getVNDate() {
   );
 }
 
+/**
+ * 
+ * @param {string} _path 
+ */
 function createFolderIfNotExists(_path) {
   return new Promise((resolve, reject) =>
     fs.mkdir(_path, { recursive: true }, (err) => {
       if (err) {
-        reject(err);
+        return reject(err);
       }
 
       resolve(true);
@@ -81,6 +96,10 @@ function createFolderIfNotExists(_path) {
   );
 }
 
+/**
+ * Run shell script
+ * @param {string} cmd 
+ */
 function runCommand(cmd) {
   return new Promise((resolve, reject) => {
     return exec(cmd, (error) => {
@@ -91,6 +110,10 @@ function runCommand(cmd) {
   });
 }
 
+/**
+ * Zip file
+ * @param {string} _path 
+ */
 function zipFolderPromise(_path) {
   return new Promise((resolve, reject) => {
     const out = `${_path}.zip`;

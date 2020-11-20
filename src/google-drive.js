@@ -14,6 +14,11 @@ async function authorize() {
   return jwt;
 }
 
+/**
+ * 
+ * @param {string} auth 
+ * @param {string} filePath 
+ */
 async function uploadFile(auth, filePath) {
   const drive = google.drive({ version: 'v3', auth });
   const [fileName] = filePath.split('/').slice(-1);
