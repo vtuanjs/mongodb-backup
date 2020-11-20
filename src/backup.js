@@ -11,7 +11,7 @@ async function backup() {
   try {
     await createFolderIfNotExists(config.autoBackupPath);
     // check for auto backup is enabled or disabled
-    if (config.autoBackup != 1) return;
+    if (config.isAutoBackup != 1) return;
 
     let oldBackupPath;
     let currentDate = getVNDate();
@@ -20,7 +20,7 @@ async function backup() {
       config.autoBackupPath + '/' + formatYYYYMMDD(currentDate);
 
     // check for remove old backup after keeping # of days given in configuration
-    if (config.removeOldBackup == 1) {
+    if (config.isRemoveOldBackup == 1) {
       let beforeDate = _.clone(currentDate);
       beforeDate.setDate(beforeDate.getDate() - config.keepLastDaysBackup); // Substract number of days to keep backup and remove old backup
 
@@ -33,7 +33,7 @@ async function backup() {
     const zipPath = await zipFolderPromise(newBackupPath);
     await runCommand(`rm -rf ${newBackupPath}`);
 
-    if (config.removeOldBackup == true) {
+    if (config.isRemoveOldBackup == true) {
       if (fs.existsSync(oldBackupPath)) {
         await runCommand(`rm -rf ${oldBackupPath}.zip`);
       }

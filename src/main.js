@@ -2,7 +2,7 @@ const backupDB = require('./backup');
 const CronJob = require('cron').CronJob;
 const config = require('./config')
 
-if (config.forceBackup == 1) {
+if (config.isForceBackup == 1) {
   backupDB();
 }
 
