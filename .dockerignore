@@ -1,0 +1,14 @@
+.vscode/
+/configs
+node_modules/
+/resources
+.dockerignore
+.gitignore
+docker_*.sh
+build.sh
+*compose.yml
+Dockerfile
+*.md
+**/test/
+backup/
+.env

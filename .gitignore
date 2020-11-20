@@ -1,0 +1,9 @@
+logs
+*.log
+node_modules/
+.env
+dist/
+docker-compose.yml
+deploy/
+build.sh
+backup/
