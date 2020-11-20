@@ -17,11 +17,11 @@ async function authorize() {
 async function uploadFile(auth, filePath) {
   const drive = google.drive({ version: 'v3', auth });
   const [fileName] = filePath.split('/').slice(-1);
-  var fileMetadata = {
+  const fileMetadata = {
     name: fileName,
     parents: [config.googleFolderId],
   };
-  var media = {
+  const media = {
     mimeType: 'application/zip',
     body: fs.createReadStream(filePath),
   };
