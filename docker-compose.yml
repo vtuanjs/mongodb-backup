@@ -1,0 +1,30 @@
+version: "3.8"
+services:
+  mongodb_backup:
+    container_name: mongodb_backup
+    image: <repo>/egany:mongodb_backup-1.0.0
+    networks:
+      - net
+    environment:
+      NODE_ENV: "production"
+      GOOGLE_CLIENT_MAIL: ${GOOGLE_CLIENT_MAIL}
+      GOOGLE_PRIVATE_KEY: ${GOOGLE_PRIVATE_KEY}
+      GOOGLE_FOLDER_ID: ${GOOGLE_FOLDER_ID}
+      MONGO_ROOT_USER: ${MONGO_ROOT_USER}
+      MONGO_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+      MONGO_HOST: ${MONGO_HOST}
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == worker
+      resources:
+        limits:
+          cpus: "0.70"
+          memory: "700M"
+        reservations:
+          memory: "4M"
+networks:
+  net:
+    driver: overlay
+    attachable: true
