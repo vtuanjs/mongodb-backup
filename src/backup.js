@@ -21,8 +21,6 @@ async function backup() {
 
   try {
     await createFolderIfNotExists(config.autoBackupPath);
-    // check for auto backup is enabled or disabled
-    if (config.isAutoBackup != 1) return;
 
     let oldBackupPath;
     let currentDate = getVNDate();

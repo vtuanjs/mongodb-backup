@@ -31,6 +31,7 @@ module.exports = {
   ],
   googleFolderId: process.env.GOOGLE_FOLDER_ID || '', // Do not forget share your folder to client email
 
+  isAllowSendTelegramMessage: process.env.IS_ALLOW_SEND_TELEGRAM_MESSAGE || 1,
   telegramChanelId: process.env.TELEGRAM_CHANEL_ID || '',
   telegramBotToken: process.env.TELEGRAM_BOT_TOKEN || '',
   telegramMessageLevels: process.env.TELEGRAM_MESSAGE_LEVELS || 'info error',

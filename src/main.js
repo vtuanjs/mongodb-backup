@@ -1,6 +1,6 @@
 const backupDB = require('./backup');
 const CronJob = require('cron').CronJob;
-const config = require('./config')
+const config = require('./config');
 
 // Backup data immediately when start server, Default: 0
 if (config.isForceBackup == 1) {
@@ -8,13 +8,17 @@ if (config.isForceBackup == 1) {
 }
 
 // Default cron time: 0:00AM everyday, GMT +7
-const job = new CronJob(
-  config.cronJobTime,
-  () => {
-    backupDB();
-  },
-  null,
-  true,
-  "Asia/Vientiane"
-);
-job.start();
+if (config.isAutoBackup == 1) {
+  const job = new CronJob(
+    config.cronJobTime,
+    () => {
+      backupDB();
+    },
+    null,
+    true,
+    'Asia/Vientiane'
+  );
+
+  job.start();
+  console.log('Auto backup MongoDB starting...');
+}

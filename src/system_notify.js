@@ -42,7 +42,7 @@ function changeErrorObjectToMessage(error) {
  * @param {string} message
  */
 async function sendMessageToTelegram(message) {
-  if (!config.telegramBotToken || !config.telegramChanelId) {
+  if (!config.telegramBotToken || !config.telegramChanelId || config.isAllowSendTelegramMessage != 1) {
     return;
   }
   
