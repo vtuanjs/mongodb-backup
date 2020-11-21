@@ -2,6 +2,31 @@ const { google } = require('googleapis');
 const fs = require('fs');
 const config = require('./config');
 
+/**
+ * 
+ * @param {*} auth 
+ * @param {string} id 
+ */
+async function deleteFile(auth, id) {
+  const drive = google.drive({ version: 'v3', auth });
+  const result = await drive.files.delete({
+    fileId: id,
+  });
+
+  return result.data;
+}
+
+/**
+ * 
+ * @param {*} auth 
+ */
+async function listFile(auth) {
+  const drive = google.drive({ version: 'v3', auth });
+  const files = await drive.files.list();
+
+  return files.data.files;
+}
+
 async function authorize() {
   const jwt = new google.auth.JWT(
     config.googleClientMail,
@@ -14,14 +39,19 @@ async function authorize() {
   return jwt;
 }
 
-async function uploadFile(auth, filePath) {
+/**
+ * @param {object} params
+ * @param {string} params.auth
+ * @param {string} params.filePath
+ * @param {string} params.fileName
+ */
+async function uploadFile({auth, filePath, fileName}) {
   const drive = google.drive({ version: 'v3', auth });
-  const [fileName] = filePath.split('/').slice(-1);
-  var fileMetadata = {
+  const fileMetadata = {
     name: fileName,
     parents: [config.googleFolderId],
   };
-  var media = {
+  const media = {
     mimeType: 'application/zip',
     body: fs.createReadStream(filePath),
   };
@@ -29,14 +59,16 @@ async function uploadFile(auth, filePath) {
   const file = await drive.files.create({
     resource: fileMetadata,
     media: media,
-    fields: 'id',
+    fields: 'name',
   });
 
-  if (file && file.data) return file.data.id;
+  if (file && file.data) return file.data;
   throw new Error('Upload file error');
 }
 
 module.exports = {
   authorize,
   uploadFile,
+  listFile,
+  deleteFile,
 };
