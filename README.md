@@ -122,13 +122,28 @@ Folder lưu trữ file backup cần được chia sẽ với Client Mail
 
 ---
 
-`IS_ALLOW_SEND_TELEGRAM_MESSAGE`: Có cho phép gửi tin nhắn qua Telegram không
+`IS_ALLOW_SEND_TELEGRAM_MESSAGE`: Có cho phép gửi tin nhắn qua Telegram không. Default 1
 
 `TELEGRAM_CHANEL_ID`: Cấu hình gửi thông báo backup qua telegram
 
 `TELEGRAM_BOT_TOKEN`
 
 `TELEGRAM_MESSAGE_LEVELS`: Cấu hình loại tin nhắn sẽ gửi qua telegram. Mặc định: "info error"
+
+`TELEGRAM_PREFIX`: Prefix tuỳ chỉnh khi gửi tin nhắn qua Telegram. Default: MongoDB Backup
+
+- Message mẫu được gửi:
+
+```
+21/11/2020, 6:43:34 PM, VietNam
+
+✅ MongoDB Backup
+
+Backup database to GG Drive with file name: 2020-11-21.zip successfully!
+```
+
+- Lưu ý: Telegram message chỉ hoạt động trên 3 môi trường: Development, Staging, Production.
+- Bạn cần truyền đủ TELEGRAM_CHANEL_ID và TELEGRAM_BOT_TOKEN thì hệ thống mới gửi tin nhắn qua Telegram được.
 
 ## 6. Demo và hướng dẫn cách lấy các tham số cần thiết
 
