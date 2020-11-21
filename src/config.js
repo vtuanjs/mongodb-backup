@@ -12,11 +12,22 @@ module.exports = {
   autoBackupPath: path.join(__dirname, 'backup'),
   isForceBackup: process.env.IS_FORCE_BACKUP || 0,
 
-  isRemoveOldBackup: process.env.IS_REMOVE_OLD_BACKUP || 1,
-  keepLastDaysBackup: process.env.KEEP_LAST_DAYS_BACKUP || 2,
+  isRemoveOldLocalBackup: process.env.IS_REMOVE_OLD_LOCAL_BACKUP || 1,
+  keepLastDaysOfLocalBackup: process.env.KEEP_LAST_DAYS_OF_LOCAL_BACKUP || 2,
+
+  isRemoveOldDriveBackup: process.env.IS_REMOVE_OLD_DRIVE_BACKUP || 1,
+  keepLastDaysOfDriveBackup: process.env.KEEP_LAST_DAYS_OF_DRIVE_BACKUP || 7,
 
   googleClientMail: process.env.GOOGLE_CLIENT_MAIL || '',
   googlePrivateKey: process.env.GOOGLE_PRIVATE_KEY || '',
-  googleScopes: ['https://www.googleapis.com/auth/drive'],
+  googleScopes: [
+    'https://www.googleapis.com/auth/drive',
+    'https://www.googleapis.com/auth/drive.appdata',
+    'https://www.googleapis.com/auth/drive.file',
+    'https://www.googleapis.com/auth/drive.metadata',
+    'https://www.googleapis.com/auth/drive.metadata.readonly',
+    'https://www.googleapis.com/auth/drive.photos.readonly',
+    'https://www.googleapis.com/auth/drive.readonly',
+  ],
   googleFolderId: process.env.GOOGLE_FOLDER_ID || '', // Do not forget share your folder to client email
 };

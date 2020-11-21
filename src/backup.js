@@ -1,9 +1,15 @@
 const fs = require('fs');
+const { file } = require('googleapis/build/src/apis/file');
 const _ = require('lodash');
 const exec = require('child_process').exec;
 const zipFolder = require('zip-folder');
 const config = require('./config');
-const { authorize, uploadFile } = require('./google-drive');
+const {
+  authorize,
+  uploadFile,
+  deleteFile,
+  listFile,
+} = require('./google-drive');
 
 // Backup script
 async function backup() {
@@ -19,14 +25,6 @@ async function backup() {
     let newBackupPath =
       config.autoBackupPath + '/' + formatYYYYMMDD(currentDate);
 
-    // check for remove old backup after keeping # of days given in configuration
-    if (config.isRemoveOldBackup == 1) {
-      let beforeDate = _.clone(currentDate);
-      beforeDate.setDate(beforeDate.getDate() - config.keepLastDaysBackup); // Substract number of days to keep backup and remove old backup
-
-      oldBackupPath = config.autoBackupPath + '/' + formatYYYYMMDD(beforeDate); // old backup(after keeping # of days)
-    }
-
     // create backup file
     const cmd = getMongodumpCMD(newBackupPath);
     await runCommand(cmd);
@@ -35,7 +33,15 @@ async function backup() {
     const zipPath = await zipFolderPromise(newBackupPath);
     await runCommand(`rm -rf ${newBackupPath}`);
 
-    if (config.isRemoveOldBackup == true) {
+    // check for remove old local backup after keeping # of days given in configuration
+    if (config.isRemoveOldLocalBackup == 1) {
+      let beforeDate = _.clone(currentDate);
+      beforeDate.setDate(
+        beforeDate.getDate() - config.keepLastDaysOfLocalBackup
+      ); // Substract number of days to keep backup and remove old backup
+
+      oldBackupPath = config.autoBackupPath + '/' + formatYYYYMMDD(beforeDate); // old backup(after keeping # of days)
+
       if (fs.existsSync(oldBackupPath)) {
         await runCommand(`rm -rf ${oldBackupPath}.zip`);
       }
@@ -43,7 +49,31 @@ async function backup() {
 
     // handle google drive
     const auth = await authorize();
-    const filedId = await uploadFile(auth, zipPath);
+    const fileName = zipPath.split('/').slice(-1)[0];
+
+    const filedId = await uploadFile({
+      auth,
+      filePath: zipPath,
+      fileName,
+    });
+
+    // check for remove old drive backup after keeping # of days given in configuration
+    if (config.isRemoveOldDriveBackup == 1) {
+      let beforeDate = _.clone(currentDate);
+      beforeDate.setDate(
+        beforeDate.getDate() - config.keepLastDaysOfDriveBackup
+      ); // Substract number of days to keep backup and remove old backup
+
+      oldBackupName = formatYYYYMMDD(beforeDate); // old backup(after keeping # of days)
+      const files = await listFile(auth);
+      for (const file of files) {
+        if (file.name === oldBackupName) {
+          await deleteFile(auth, file.id);
+          // Do not break the loop because some files have the same name
+        }
+      }
+    }
+
     console.log(
       `[${getVNDate()}] Backup database to GG Drive with file ID: ${filedId} successfully!`
     );
@@ -54,7 +84,7 @@ async function backup() {
 }
 
 /**
- * 
+ *
  * @param {string} output output folder
  */
 function getMongodumpCMD(output) {
@@ -67,7 +97,7 @@ function getMongodumpCMD(output) {
 }
 
 /**
- * 
+ *
  * @param {Date} date
  */
 function formatYYYYMMDD(date) {
@@ -81,8 +111,9 @@ function getVNDate() {
 }
 
 /**
- * 
- * @param {string} _path 
+ *
+ * @param {string} _path
+ * @returns {Promise<Boolean>}
  */
 function createFolderIfNotExists(_path) {
   return new Promise((resolve, reject) =>
@@ -98,21 +129,23 @@ function createFolderIfNotExists(_path) {
 
 /**
  * Run shell script
- * @param {string} cmd 
+ * @param {string} cmd
+ * @returns {Promise<string>}
  */
 function runCommand(cmd) {
   return new Promise((resolve, reject) => {
     return exec(cmd, (error) => {
       if (error) return reject(error);
 
-      resolve()
+      resolve('Success');
     });
   });
 }
 
 /**
  * Zip file
- * @param {string} _path 
+ * @param {string} _path
+ * @returns {Promise<string>}
  */
 function zipFolderPromise(_path) {
   return new Promise((resolve, reject) => {

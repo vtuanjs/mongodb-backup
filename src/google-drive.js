@@ -2,6 +2,31 @@ const { google } = require('googleapis');
 const fs = require('fs');
 const config = require('./config');
 
+/**
+ * 
+ * @param {*} auth 
+ * @param {string} id 
+ */
+async function deleteFile(auth, id) {
+  const drive = google.drive({ version: 'v3', auth });
+  const result = await drive.files.delete({
+    fileId: id,
+  });
+
+  return result.data;
+}
+
+/**
+ * 
+ * @param {*} auth 
+ */
+async function listFile(auth) {
+  const drive = google.drive({ version: 'v3', auth });
+  const files = await drive.files.list();
+
+  return files.data.files;
+}
+
 async function authorize() {
   const jwt = new google.auth.JWT(
     config.googleClientMail,
@@ -15,13 +40,13 @@ async function authorize() {
 }
 
 /**
- * 
- * @param {string} auth 
- * @param {string} filePath 
+ * @param {object} params
+ * @param {string} params.auth
+ * @param {string} params.filePath
+ * @param {string} params.fileName
  */
-async function uploadFile(auth, filePath) {
+async function uploadFile({auth, filePath, fileName}) {
   const drive = google.drive({ version: 'v3', auth });
-  const [fileName] = filePath.split('/').slice(-1);
   const fileMetadata = {
     name: fileName,
     parents: [config.googleFolderId],
@@ -44,4 +69,6 @@ async function uploadFile(auth, filePath) {
 module.exports = {
   authorize,
   uploadFile,
+  listFile,
+  deleteFile,
 };
