@@ -129,3 +129,9 @@ Folder lưu trữ file backup cần được chia sẽ với Client Mail
 `TELEGRAM_BOT_TOKEN`
 
 `TELEGRAM_MESSAGE_LEVELS`: Cấu hình loại tin nhắn sẽ gửi qua telegram. Mặc định: "info error"
+
+## 6. Demo và hướng dẫn cách lấy các tham số cần thiết
+
+Youtube: 
+
+[![Demo](https://img.youtube.com/vi/NvYQqbnKP8g/0.jpg)](https://www.youtube.com/watch?v=NvYQqbnKP8g)
