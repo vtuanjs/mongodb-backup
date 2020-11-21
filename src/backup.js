@@ -10,10 +10,15 @@ const {
   deleteFile,
   listFile,
 } = require('./google-drive');
+const {
+  sendErrorToTelegram,
+  sendSuccessMessageToTelegram,
+} = require('./system_notify');
 
 // Backup script
 async function backup() {
   console.log(`[${getVNDate()}] Backup database starting...`);
+
   try {
     await createFolderIfNotExists(config.autoBackupPath);
     // check for auto backup is enabled or disabled
@@ -51,7 +56,7 @@ async function backup() {
     const auth = await authorize();
     const fileName = zipPath.split('/').slice(-1)[0];
 
-    const filedId = await uploadFile({
+    const file = await uploadFile({
       auth,
       filePath: zipPath,
       fileName,
@@ -66,20 +71,27 @@ async function backup() {
 
       oldBackupName = formatYYYYMMDD(beforeDate); // old backup(after keeping # of days)
       const files = await listFile(auth);
-      for (const file of files) {
-        if (file.name === oldBackupName) {
-          await deleteFile(auth, file.id);
+      for (const _file of files) {
+        if (_file.name === oldBackupName) {
+          await deleteFile(auth, _file.id);
           // Do not break the loop because some files have the same name
         }
       }
     }
 
     console.log(
-      `[${getVNDate()}] Backup database to GG Drive with file ID: ${filedId} successfully!`
+      `[${getVNDate()}] Backup database to GG Drive with file name: ${file.name} successfully!`
     );
+    if (config.telegramMessageLevels.includes('info')) {
+      await sendSuccessMessageToTelegram(`Backup database to GG Drive with file name: ${file.name} successfully!`);
+    }
+
     return;
   } catch (error) {
     console.log(error);
+    if (config.telegramMessageLevels.includes('error')) {
+      await sendErrorToTelegram(`Backup database to GG Drive failed`, error);
+    } 
   }
 }
 

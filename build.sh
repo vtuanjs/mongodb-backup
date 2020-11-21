@@ -6,4 +6,4 @@ PACKAGE_VERSION=$(cat package.json \
   | sed 's/[",]//g' \
   | tr -d '[[:space:]]')
 
-docker build --compress --tag <repo>/egany:mongodb_backup-$PACKAGE_VERSION .
+docker build --compress --tag vtuanjs/mongodb_backup-$PACKAGE_VERSION .

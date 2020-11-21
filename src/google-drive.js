@@ -59,10 +59,10 @@ async function uploadFile({auth, filePath, fileName}) {
   const file = await drive.files.create({
     resource: fileMetadata,
     media: media,
-    fields: 'id',
+    fields: 'name',
   });
 
-  if (file && file.data) return file.data.id;
+  if (file && file.data) return file.data;
   throw new Error('Upload file error');
 }
 
