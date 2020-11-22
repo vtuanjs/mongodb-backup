@@ -36,6 +36,16 @@ async function backup() {
     const zipPath = await zipFolderPromise(newBackupPath);
     await runCommand(`rm -rf ${newBackupPath}`);
 
+    // handle google drive
+    const auth = await authorize();
+    const fileName = zipPath.split('/').slice(-1)[0];
+
+    const file = await uploadFile({
+      auth,
+      filePath: zipPath,
+      fileName,
+    });
+
     // check for remove old local backup after keeping # of days given in configuration
     if (config.isRemoveOldLocalBackup == 1) {
       let beforeDate = _.clone(currentDate);
@@ -49,16 +59,6 @@ async function backup() {
         await runCommand(`rm -rf ${oldBackupPath}.zip`);
       }
     }
-
-    // handle google drive
-    const auth = await authorize();
-    const fileName = zipPath.split('/').slice(-1)[0];
-
-    const file = await uploadFile({
-      auth,
-      filePath: zipPath,
-      fileName,
-    });
 
     // check for remove old drive backup after keeping # of days given in configuration
     if (config.isRemoveOldDriveBackup == 1) {
