@@ -21,6 +21,7 @@ if (config.isAutoBackup == 1) {
   );
 
   job.start();
+  sendSuccessMessageToTelegram("Auto backup MongoDB starting...")
   console.log('Auto backup MongoDB starting...');
 }
 

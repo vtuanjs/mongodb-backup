@@ -12,3 +12,7 @@ Dockerfile
 **/test/
 backup/
 .env
+backup/
+deploy.sh
+build.sh
+build_lastest

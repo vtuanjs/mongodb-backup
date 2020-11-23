@@ -49,7 +49,7 @@ Tạo file docker-compose.yml như sau
 version: '3.8'
 services:
   mongodb_backup:
-    image: vtuanjs/mongodb_backup:1.0.0
+    image: vtuanjs/mongodb_backup:lastest
     networks:
       - net
     environment:
