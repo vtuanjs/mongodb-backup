@@ -1,6 +1,7 @@
 const { google } = require('googleapis');
 const fs = require('fs');
 const config = require('./config');
+const _ = require('lodash');
 
 /**
  * 
@@ -31,7 +32,7 @@ async function authorize() {
   const jwt = new google.auth.JWT(
     config.googleClientMail,
     null,
-    config.googlePrivateKey,
+    _.replace(config.googlePrivateKey, new RegExp("\\\\n", "\g"), "\n"),
     config.googleScopes
   );
 
