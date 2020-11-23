@@ -1,4 +1,4 @@
-# Build from mongo 
+# Build from node 
 FROM node
 
 # Install mongo
