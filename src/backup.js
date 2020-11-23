@@ -128,9 +128,9 @@ function getVNDate() {
 function createFolderIfNotExists(_path) {
   return new Promise((resolve, reject) =>
     fs.mkdir(_path, { recursive: true }, (err) => {
-      if (err) {
-        return reject(err);
-      }
+      // if (err) {
+      //   return reject(err);
+      // }
 
       resolve(true);
     })
