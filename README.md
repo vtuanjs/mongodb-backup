@@ -138,7 +138,7 @@ Folder lưu trữ file backup cần được chia sẽ với Client Mail
 
 ---
 
-`HTTP_FORCE_BACKUP_TOKEN`: Mã token dùng để user force backup qua api. Mặc định là tắt, chỉ hoạt động khi được truyền giá trị.
+`HTTP_FORCE_BACKUP_TOKEN`: Mã token dùng để user force backup qua api. Mặc định là tắt, chỉ hoạt động khi được truyền giá trị. Lưu ý: Bạn cần mapping Port 5050 ra host để chạy `curl` nhé!
 
 Cấu trúc:
 ```
