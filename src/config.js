@@ -2,8 +2,8 @@ const path = require('path');
 require('dotenv').config();
 
 module.exports = {
-  user: process.env.MONGO_ROOT_USER || '',
-  pass: process.env.MONGO_ROOT_PASSWORD || '',
+  user: process.env.MONGO_ROOT_USER || process.env.MONGO_BACKUP_USER || '',
+  pass: process.env.MONGO_ROOT_PASSWORD || process.env.MONGO_BACKUP_PASSWORD || '',
   host: process.env.MONGO_HOST || 'localhost',
   port: process.env.MONGO_PORT || 27017,
 
@@ -36,4 +36,7 @@ module.exports = {
   telegramBotToken: process.env.TELEGRAM_BOT_TOKEN || '',
   telegramMessageLevels: process.env.TELEGRAM_MESSAGE_LEVELS || 'info error',
   telegramPrefix: process.env.TELEGRAM_PREFIX || 'MongoDB Backup',
+
+  httpPort: process.env.HTTP_PORT || 5050,
+  token: process.env.HTTP_FORCE_BACKUP_TOKEN || ""
 };

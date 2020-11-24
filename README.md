@@ -57,8 +57,8 @@ services:
       GOOGLE_CLIENT_MAIL: ${GOOGLE_CLIENT_MAIL}
       GOOGLE_PRIVATE_KEY: ${GOOGLE_PRIVATE_KEY}
       GOOGLE_FOLDER_ID: ${GOOGLE_FOLDER_ID}
-      MONGO_ROOT_USER: ${MONGO_ROOT_USER}
-      MONGO_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+      MONGO_BACKUP_USER: ${MONGO_BACKUP_USER}
+      MONGO_BACKUP_PASSWORD: ${MONGO_BACKUP_PASSWORD}
       MONGO_HOST: ${MONGO_HOST}
       IS_FORCE_BACKUP: ${IS_FORCE_BACKUP}
     deploy:
@@ -82,15 +82,19 @@ Cấu hình bên trên là cấu hình tối thiểu để app có thể hoạt 
 
 Lưu ý:
 ```
-Biến MONGO_ROOT_USER: Là user có quyền root hoặc quyền đọc tất cả database
+Biến MONGO_BACKUP_USER: Là user có quyền "root" hoặc quyền "backup" database. Xem "phần 7" để được hướng dẫn cách tạo user có quyền Backup.
 Folder lưu trữ file backup cần được chia sẽ với Client Mail
 ```
 
 ## 5. Các biến môi trường
 
-`MONGO_ROOT_USER`: User
+`MONGO_ROOT_USER`: Root User (Biến cũ ở Version 1.0.0 và sẽ bị ***loại bỏ*** trong tương lai)
 
-`MONGO_ROOT_PASSWORD`: Password
+`MONGO_ROOT_PASSWORD`: Root Password (Biến cũ ở Version 1.0.0 và sẽ bị ***loại bỏ*** trong tương lai)
+
+`MONGO_BACKUP_USER`: Root Username hoặc Backup Username
+
+`MONGO_BACKUP_PASSWORD`: Root Password hặc Backup User Password
 
 `MONGO_HOST`: Địa chỉ IP/ Tên container/ Tên service của MongoDB
 
@@ -132,7 +136,21 @@ Folder lưu trữ file backup cần được chia sẽ với Client Mail
 
 `TELEGRAM_PREFIX`: Prefix tuỳ chỉnh khi gửi tin nhắn qua Telegram. Default: MongoDB Backup
 
-- Message mẫu được gửi:
+---
+
+`HTTP_FORCE_BACKUP_TOKEN`: Mã token dùng để user force backup qua api. Mặc định là tắt, chỉ hoạt động khi được truyền giá trị.
+
+Cấu trúc:
+```
+GET: http://localhost:5050?token=<mã token>
+
+POST: http://localhost:5050
+  Body: { token: <mã token> }
+```
+
+---
+
+- Message mẫu Telegram được gửi:
 
 ```
 21/11/2020, 6:43:34 PM, VietNam
@@ -150,3 +168,33 @@ Backup database to GG Drive with file name: 2020-11-21.zip successfully!
 Youtube: 
 
 [![Demo](https://img.youtube.com/vi/NvYQqbnKP8g/0.jpg)](https://www.youtube.com/watch?v=NvYQqbnKP8g)
+
+## 7. Thông tin khác
+
+### 7.1. Cách tạo Backup User
+
+- Bước 1: Truy cập mongodb bằng shell
+```
+mongo --port 27017 -u "<username>" --authenticationDatabase "admin"
+```
+Sau đó nhập Password để truy cập
+
+- Bước 2: Truy cập vào admin database
+```
+use admin
+```
+
+- Bước 3: Chạy lệnh sau để tạo user
+```
+db.createUser({
+    user: "<username>",
+    pwd: "<password>",
+    roles: [{
+        role: "backup",
+        db: "admin"
+    }]
+})
+```
+
+### 7.2. Cách tạo Telegram Bot để nhận thông báo
+Đang cập nhập...

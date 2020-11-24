@@ -5,6 +5,6 @@ node_modules/
 dist/
 deploy/
 backup/
-deploy.sh
+/deploy.sh
 build.sh
 build_lastest.sh

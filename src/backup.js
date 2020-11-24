@@ -17,7 +17,7 @@ const {
 
 // Backup script
 async function backup() {
-  console.log(`[${getVNDate()}] Backup database starting...`);
+  console.info(`[${getVNDate()}] Backup database starting...`);
 
   try {
     await createFolderIfNotExists(config.autoBackupPath);
@@ -32,13 +32,13 @@ async function backup() {
     const cmd = getMongodumpCMD(newBackupPath);
     try {
       await runCommand(cmd);
-    } catch (error) {
-      if (typeof error.message === "string") {
-        error.message = error.message
-          .replace(config.user, '***')
-          .replace(config.pass, '***');
+    } catch (err) {
+      if (typeof error.message === 'string') {
+        error.message = removeSensitive(error.message);
       }
-
+      if (typeof error.cmd === 'string') {
+        error.cmd = removeSensitive(error.cmd);
+      }
       throw error;
     }
 
@@ -87,7 +87,7 @@ async function backup() {
       }
     }
 
-    console.log(
+    console.info(
       `[${getVNDate()}] Backup database to GG Drive with file name: ${
         file.name
       } successfully!`
@@ -100,7 +100,7 @@ async function backup() {
 
     return;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     if (config.telegramMessageLevels.includes('error')) {
       await sendErrorToTelegram(`Backup database to GG Drive failed`, error);
     }
@@ -151,6 +151,23 @@ function createFolderIfNotExists(_path) {
   );
 }
 
+const empty = function (mixedVar) {
+  let undef, key, i, len;
+  let emptyValues = [undef, null, false, 0, '', '0'];
+  for (i = 0, len = emptyValues.length; i < len; i++) {
+    if (mixedVar === emptyValues[i]) {
+      return true;
+    }
+  }
+  if (typeof mixedVar === 'object') {
+    for (key in mixedVar) {
+      return false;
+    }
+    return true;
+  }
+  return false;
+};
+
 /**
  * Run shell script
  * @param {string} cmd
@@ -158,10 +175,10 @@ function createFolderIfNotExists(_path) {
  */
 function runCommand(cmd) {
   return new Promise((resolve, reject) => {
-    return exec(cmd, (error) => {
-      if (error) return reject(error);
+    return exec(cmd, (error, stdout, stderr) => {
+      if (empty(error)) return resolve('Success');
 
-      resolve('Success');
+      return reject(error);
     });
   });
 }
@@ -180,6 +197,18 @@ function zipFolderPromise(_path) {
       resolve(out);
     });
   });
+}
+
+function removeSensitive(text) {
+  if (config.user) {
+    text = text.replace(config.user, '<hidden>');
+  }
+
+  if (config.pass) {
+    text = text.replace(config.pass, '<hidden>');
+  }
+
+  return text;
 }
 
 module.exports = backup;

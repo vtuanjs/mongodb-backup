@@ -1,6 +1,6 @@
 {
   "name": "mongodb-backup",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -13,6 +13,7 @@
     "axios": "^0.21.0",
     "cron": "^1.8.2",
     "dotenv": "^8.2.0",
+    "express": "^4.17.1",
     "googleapis": "^65.0.0",
     "lodash": "^4.17.20",
     "zip-folder": "^1.0.0"
