@@ -1,5 +1,4 @@
 const fs = require('fs');
-const { file } = require('googleapis/build/src/apis/file');
 const _ = require('lodash');
 const exec = require('child_process').exec;
 const zipFolder = require('zip-folder');
