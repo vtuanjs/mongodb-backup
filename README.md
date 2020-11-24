@@ -138,8 +138,6 @@ Folder lưu trữ file backup cần được chia sẽ với Client Mail
 
 ---
 
-`HTTP_PORT`: Port để chạy HTTP, mục đích để user thuận tiện trong việc backup database. Default 5050
-
 `HTTP_FORCE_BACKUP_TOKEN`: Mã token dùng để user force backup qua api. Mặc định là tắt, chỉ hoạt động khi được truyền giá trị.
 
 Cấu trúc:
