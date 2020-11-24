@@ -4,27 +4,17 @@ services:
     image: vtuanjs/mongodb_backup:lastest
     networks:
       - net
+    ports: 
+      - "5050:5050"
     environment:
       NODE_ENV: 'production'
       GOOGLE_CLIENT_MAIL: ${GOOGLE_CLIENT_MAIL}
       GOOGLE_PRIVATE_KEY: ${GOOGLE_PRIVATE_KEY}
       GOOGLE_FOLDER_ID: ${GOOGLE_FOLDER_ID}
-      MONGO_ROOT_USER: ${MONGO_ROOT_USER}
-      MONGO_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+      MONGO_BACKUP_USER: ${MONGO_BACKUP_USER}
+      MONGO_BACKUP_PASSWORD: ${MONGO_BACKUP_PASSWORD}
       MONGO_HOST: ${MONGO_HOST}
       IS_FORCE_BACKUP: ${IS_FORCE_BACKUP}
-    deploy:
-      replicas: 1
-      placement:
-        constraints:
-          - node.role == worker
-      resources:
-        limits:
-          cpus: '0.70'
-          memory: '700M'
-        reservations:
-          memory: '4M'
+      HTTP_FORCE_BACKUP_TOKEN: ${HTTP_FORCE_BACKUP_TOKEN}
 networks:
   net:
-    driver: overlay
-    attachable: true
