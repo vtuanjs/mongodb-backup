@@ -30,7 +30,17 @@ async function backup() {
 
     // create backup file
     const cmd = getMongodumpCMD(newBackupPath);
-    await runCommand(cmd);
+    try {
+      await runCommand(cmd);
+    } catch (error) {
+      if (typeof error.message === "string") {
+        error.message = error.message
+          .replace(config.user, '***')
+          .replace(config.pass, '***');
+      }
+
+      throw error;
+    }
 
     // create zip file and remove old file
     const zipPath = await zipFolderPromise(newBackupPath);
@@ -78,10 +88,14 @@ async function backup() {
     }
 
     console.log(
-      `[${getVNDate()}] Backup database to GG Drive with file name: ${file.name} successfully!`
+      `[${getVNDate()}] Backup database to GG Drive with file name: ${
+        file.name
+      } successfully!`
     );
     if (config.telegramMessageLevels.includes('info')) {
-      await sendSuccessMessageToTelegram(`Backup database to GG Drive with file name: ${file.name} successfully!`);
+      await sendSuccessMessageToTelegram(
+        `Backup database to GG Drive with file name: ${file.name} successfully!`
+      );
     }
 
     return;
@@ -89,7 +103,7 @@ async function backup() {
     console.log(error);
     if (config.telegramMessageLevels.includes('error')) {
       await sendErrorToTelegram(`Backup database to GG Drive failed`, error);
-    } 
+    }
   }
 }
 
