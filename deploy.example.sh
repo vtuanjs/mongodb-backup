@@ -1,0 +1,10 @@
+#!/bin/bash
+GOOGLE_CLIENT_MAIL="cliemt-mail@gmail.com" \
+GOOGLE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----1234-----END PRIVATE KEY-----\n" \
+GOOGLE_FOLDER_ID="1234" \
+IS_FORCE_BACKUP=0 \
+MONGO_BACKUP_USER="user" \
+MONGO_BACKUP_PASSWORD="pass" \
+MONGO_HOST="mongodb" \
+HTTP_FORCE_BACKUP_TOKEN="1234" \
+docker-compose up -d

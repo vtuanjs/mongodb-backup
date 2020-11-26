@@ -43,6 +43,14 @@ IS_FORCE_BACKUP=1
 ```
 Lưu ý: File .env chỉ hoạt động với Local, khi lên Production sẽ bị loại bỏ.
 
+### 4.2. Docker test
+Chỉnh sửa file deploy.example.sh với các thông số như phần `4.2`
+
+Chạy 
+```
+bash ./deploy.example.sh
+```
+
 ### 4.3. Production
 Tạo file docker-compose.yml như sau
 ```
@@ -128,7 +136,7 @@ Folder lưu trữ file backup cần được chia sẽ với Client Mail
 
 `IS_ALLOW_SEND_TELEGRAM_MESSAGE`: Có cho phép gửi tin nhắn qua Telegram không. Default 1
 
-`TELEGRAM_CHANEL_ID`: Cấu hình gửi thông báo backup qua telegram
+`TELEGRAM_CHANEL_ID`: Cấu hình gửi thông báo backup qua telegram. Cấu trúc: "-chanelID" (Có dấu "-" đằng trước chanelID)
 
 `TELEGRAM_BOT_TOKEN`
 
