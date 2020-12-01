@@ -32,13 +32,13 @@ async function backup() {
     try {
       await runCommand(cmd);
     } catch (err) {
-      if (typeof error.message === 'string') {
-        error.message = removeSensitive(error.message);
+      if (typeof err.message === 'string') {
+        err.message = removeSensitive(err.message);
       }
-      if (typeof error.cmd === 'string') {
-        error.cmd = removeSensitive(error.cmd);
+      if (typeof err.cmd === 'string') {
+        err.cmd = removeSensitive(err.cmd);
       }
-      throw error;
+      throw err;
     }
 
     // create zip file and remove old file
@@ -63,8 +63,7 @@ async function backup() {
       ); // Substract number of days to keep backup and remove old backup
 
       oldBackupPath = config.autoBackupPath + '/' + formatYYYYMMDD(beforeDate); // old backup(after keeping # of days)
-
-      if (fs.existsSync(oldBackupPath)) {
+      if (fs.existsSync(`${oldBackupPath}.zip`)) {
         await runCommand(`rm -rf ${oldBackupPath}.zip`);
       }
     }
@@ -79,7 +78,7 @@ async function backup() {
       oldBackupName = formatYYYYMMDD(beforeDate); // old backup(after keeping # of days)
       const files = await listFile(auth);
       for (const _file of files) {
-        if (_file.name === oldBackupName) {
+        if (_file.name === `${oldBackupName}.zip`) {
           await deleteFile(auth, _file.id);
           // Do not break the loop because some files have the same name
         }
