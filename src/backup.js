@@ -20,8 +20,6 @@ async function backup() {
 
   try {
     await createFolderIfNotExists(config.autoBackupPath);
-
-    let oldBackupPath;
     let currentDate = getVNDate();
 
     let newBackupPath =
@@ -55,36 +53,6 @@ async function backup() {
       fileName,
     });
 
-    // check for remove old local backup after keeping # of days given in configuration
-    if (config.isRemoveOldLocalBackup == 1) {
-      let beforeDate = _.clone(currentDate);
-      beforeDate.setDate(
-        beforeDate.getDate() - config.keepLastDaysOfLocalBackup
-      ); // Substract number of days to keep backup and remove old backup
-
-      oldBackupPath = config.autoBackupPath + '/' + formatYYYYMMDD(beforeDate); // old backup(after keeping # of days)
-      if (fs.existsSync(`${oldBackupPath}.zip`)) {
-        await runCommand(`rm -rf ${oldBackupPath}.zip`);
-      }
-    }
-
-    // check for remove old drive backup after keeping # of days given in configuration
-    if (config.isRemoveOldDriveBackup == 1) {
-      let beforeDate = _.clone(currentDate);
-      beforeDate.setDate(
-        beforeDate.getDate() - config.keepLastDaysOfDriveBackup
-      ); // Substract number of days to keep backup and remove old backup
-
-      oldBackupName = formatYYYYMMDD(beforeDate); // old backup(after keeping # of days)
-      const files = await listFile(auth);
-      for (const _file of files) {
-        if (_file.name === `${oldBackupName}.zip`) {
-          await deleteFile(auth, _file.id);
-          // Do not break the loop because some files have the same name
-        }
-      }
-    }
-
     console.info(
       `[${getVNDate()}] Backup database to GG Drive with file name: ${
         file.name
@@ -94,6 +62,43 @@ async function backup() {
       await sendSuccessMessageToTelegram(
         `Backup database to GG Drive with file name: ${file.name} successfully!`
       );
+    }
+
+    try {
+      // check for remove old local backup after keeping # of days given in configuration
+      if (config.isRemoveOldLocalBackup == 1) {
+        let beforeDate = _.clone(currentDate);
+        beforeDate.setDate(
+          beforeDate.getDate() - config.keepLastDaysOfLocalBackup
+        ); // Substract number of days to keep backup and remove old backup
+
+        const oldBackupPath =
+          config.autoBackupPath + '/' + formatYYYYMMDD(beforeDate); // old backup(after keeping # of days)
+        if (fs.existsSync(`${oldBackupPath}.zip`)) {
+          await runCommand(`rm -rf ${oldBackupPath}.zip`);
+        }
+      }
+
+      // check for remove old drive backup after keeping # of days given in configuration
+      if (config.isRemoveOldDriveBackup == 1) {
+        let beforeDate = _.clone(currentDate);
+        beforeDate.setDate(
+          beforeDate.getDate() - config.keepLastDaysOfDriveBackup
+        ); // Substract number of days to keep backup and remove old backup
+
+        const oldBackupName = formatYYYYMMDD(beforeDate); // old backup(after keeping # of days)
+        const files = await listFile(auth);
+        for (const _file of files) {
+          if (_file.name === `${oldBackupName}.zip`) {
+            await deleteFile(auth, _file.id);
+            // Do not break the loop because some files have the same name
+          }
+        }
+      }
+    } catch (err) {
+      if (config.telegramMessageLevels.includes('error')) {
+        await sendErrorToTelegram(`Delete backup file failed`, err);
+      }
     }
 
     return;
