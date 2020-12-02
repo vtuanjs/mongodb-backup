@@ -69,17 +69,6 @@ services:
       MONGO_BACKUP_PASSWORD: ${MONGO_BACKUP_PASSWORD}
       MONGO_HOST: ${MONGO_HOST}
       IS_FORCE_BACKUP: ${IS_FORCE_BACKUP}
-    deploy:
-      replicas: 1
-      placement:
-        constraints:
-          - node.role == worker
-      resources:
-        limits:
-          cpus: '0.70'
-          memory: '700M'
-        reservations:
-          memory: '4M'
 networks:
   net:
     driver: overlay
