@@ -96,6 +96,7 @@ async function backup() {
         }
       }
     } catch (err) {
+      console.error(err);
       if (config.telegramMessageLevels.includes('error')) {
         await sendErrorToTelegram(`Delete backup file failed`, err);
       }
