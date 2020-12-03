@@ -23,7 +23,9 @@ async function deleteFile(auth, id) {
  */
 async function listFile(auth) {
   const drive = google.drive({ version: 'v3', auth });
-  const files = await drive.files.list();
+  const files = await drive.files.list({
+    q: "'" + config.googleFolderId + "' in parents"
+  });
 
   return files.data.files;
 }
