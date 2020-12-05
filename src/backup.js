@@ -116,7 +116,14 @@ async function backup() {
  * @param {string} output output folder
  */
 function getMongodumpCMD(output) {
-  let cmd = `mongodump --host ${config.host} --port ${config.port}`;
+  let cmd = `mongodump`;
+  if (config.uri) {
+    cmd += ` --uri ${config.uri}`;
+  } else {
+    cmd += ` --host ${config.host}`;
+    cmd += ` --port ${config.port}`;
+  }
+
   if (config.user) cmd += ` --username ${config.user}`;
   if (config.pass) cmd += ` --password ${config.pass}`;
   cmd += ` --out ${output}`;
