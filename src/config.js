@@ -6,6 +6,7 @@ module.exports = {
   pass: process.env.MONGO_ROOT_PASSWORD || process.env.MONGO_BACKUP_PASSWORD || '',
   host: process.env.MONGO_HOST || 'localhost',
   port: process.env.MONGO_PORT || 27017,
+  uri: process.env.MONGO_URI,
 
   isAutoBackup: process.env.IS_AUTO_BACKUP || 1,
   cronJobTime: process.env.CRON_JOB_TIME || '00 00 * * *',

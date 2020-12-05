@@ -67,7 +67,7 @@ services:
       GOOGLE_FOLDER_ID: ${GOOGLE_FOLDER_ID}
       MONGO_BACKUP_USER: ${MONGO_BACKUP_USER}
       MONGO_BACKUP_PASSWORD: ${MONGO_BACKUP_PASSWORD}
-      MONGO_HOST: ${MONGO_HOST}
+      MONGO_URI: ${MONGO_URI}
       IS_FORCE_BACKUP: ${IS_FORCE_BACKUP}
 networks:
   net:
@@ -93,9 +93,11 @@ Folder lưu trữ file backup cần được chia sẽ với Client Mail
 
 `MONGO_BACKUP_PASSWORD`: Root Password hặc Backup User Password
 
-`MONGO_HOST`: Địa chỉ IP/ Tên container/ Tên service của MongoDB
+`MONGO_URI`: Chuỗi connection string. Ex: "mongodb://localhost:27017"
 
-`MONGO_PORT`: Port
+`MONGO_HOST`: Địa chỉ IP/ Tên container/ Tên service của MongoDB. Default: localhost
+
+`MONGO_PORT`: Port của MongoDB. Default: 27017
 
 ---
 
