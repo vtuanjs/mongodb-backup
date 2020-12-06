@@ -1,7 +1,7 @@
 const fs = require('fs');
 const _ = require('lodash');
 const exec = require('child_process').exec;
-const zipFolder = require('zip-folder');
+const zipFolder = require('zip-a-folder');
 const config = require('./config');
 const {
   authorize,
@@ -202,7 +202,7 @@ function runCommand(cmd) {
 function zipFolderPromise(_path) {
   return new Promise((resolve, reject) => {
     const out = `${_path}.zip`;
-    return zipFolder(_path, out, (error) => {
+    return zipFolder.zipFolder(_path, out, (error) => {
       if (error) return reject(error);
 
       resolve(out);

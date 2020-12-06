@@ -197,3 +197,9 @@ db.createUser({
 
 ### 7.2. Cách tạo Telegram Bot để nhận thông báo
 Đang cập nhập...
+
+## 8. Lời cảm ơn
+Cám ơn sự đông góp nhiệt tình của mọi người:
+
+* https://github.com/nnthuanegany
+* https://github.com/nhayhoc
