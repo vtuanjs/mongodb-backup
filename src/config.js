@@ -10,6 +10,7 @@ module.exports = {
 
   isAutoBackup: process.env.IS_AUTO_BACKUP || 1,
   cronJobTime: process.env.CRON_JOB_TIME || '00 00 * * *',
+  cronJobTimes: process.env.CRON_JOB_TIMES,
   autoBackupPath: path.join(__dirname, 'backup'),
   isForceBackup: process.env.IS_FORCE_BACKUP || 0,
 

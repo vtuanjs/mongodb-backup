@@ -9,6 +9,7 @@ const {
 
 app.listen(config.httpPort, () => {
   console.info(`App listening at port: ${config.httpPort}`);
+  run()
 });
 
 // Backup data immediately when start server, Default: 0
@@ -16,10 +17,9 @@ if (config.isForceBackup == 1) {
   backupDB();
 }
 
-// Default cron time: 0:00AM everyday, GMT +7
-if (config.isAutoBackup == 1) {
+async function startAutoBackup(cronTime) {
   const job = new CronJob(
-    config.cronJobTime,
+    cronTime,
     () => {
       backupDB();
     },
@@ -29,8 +29,29 @@ if (config.isAutoBackup == 1) {
   );
 
   job.start();
-  sendSuccessMessageToTelegram('Auto backup MongoDB starting...');
-  console.info('Auto backup MongoDB starting...');
+  console.info('Backup at cron time: ', cronTime)
+}
+
+// Default cron time: 0:00AM everyday, GMT +7
+async function run(){
+  try {
+    if (config.isAutoBackup == 1) {
+      if (config.cronJobTimes) {
+        const array = JSON.parse(config.cronJobTimes)
+        for (const time of array) {
+          await startAutoBackup(time)
+        }
+      } else {
+        await startAutoBackup(config.cronJobTime)
+      }
+      
+      await sendSuccessMessageToTelegram('Auto backup MongoDB starting with cron: ');
+      console.info('Auto backup MongoDB starting...');
+    }
+  } catch (error) {
+    console.log(error)
+    process.exit(1)
+  }
 }
 
 process.on('beforeExit', async (code) => {

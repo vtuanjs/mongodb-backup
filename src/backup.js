@@ -30,6 +30,7 @@ async function backup() {
     try {
       await runCommand(cmd);
     } catch (err) {
+      console.log('Run command error');
       if (typeof err.message === 'string') {
         err.message = removeSensitive(err.message);
       }
@@ -47,22 +48,28 @@ async function backup() {
     const auth = await authorize();
     const fileName = zipPath.split('/').slice(-1)[0];
 
-    const file = await uploadFile({
-      auth,
-      filePath: zipPath,
-      fileName,
-    });
+    try {
+      const file = await uploadFile({
+        auth,
+        filePath: zipPath,
+        fileName,
+      });
 
-    console.info(
-      `[${getVNDate()}] Backup database to GG Drive with file name: ${
-        file.name
-      } successfully!`
-    );
-    if (config.telegramMessageLevels.includes('info')) {
-      await sendSuccessMessageToTelegram(
-        `Backup database to GG Drive with file name: ${file.name} successfully!`
+      console.info(
+        `[${getVNDate()}] Backup database to GG Drive with file name: ${
+          file.name
+        } successfully!`
       );
+    } catch (error) {
+      console.error('Push file to GG Drive error');
+      throw error;
     }
+    
+    // if (config.telegramMessageLevels.includes('info')) {
+    //   await sendSuccessMessageToTelegram(
+    //     `Backup database to GG Drive with file name: ${file.name} successfully!`
+    //   );
+    // }
 
     try {
       // check for remove old local backup after keeping # of days given in configuration
@@ -96,7 +103,7 @@ async function backup() {
         }
       }
     } catch (err) {
-      console.error(err);
+      console.error('Delete file error: ', err);
       if (config.telegramMessageLevels.includes('error')) {
         await sendErrorToTelegram(`Delete backup file failed`, err);
       }
@@ -119,9 +126,18 @@ function getMongodumpCMD(output) {
   let cmd = `mongodump`;
   if (config.uri) {
     cmd += ` --uri ${config.uri}`;
-  } else {
-    cmd += ` --host ${config.host}`;
+  }
+  
+  if (config.host) {
+    cmd += ` --host ${config.host}`;  
+  }
+  
+  if (config.host) {
     cmd += ` --port ${config.port}`;
+  }
+
+  if (config.host.includes('readPreference')) {
+    cmd += ` --readPreference secondaryPreferred`
   }
 
   if (config.user) cmd += ` --username ${config.user}`;

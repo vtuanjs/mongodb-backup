@@ -72,7 +72,7 @@ async function sendMessageToTelegram(message) {
 
     return;
   } catch (error) {
-    console.log('Send telegram message error', error);
+    console.log('Send telegram message error', error.response.data);
     return;
   }
 }
