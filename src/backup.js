@@ -132,11 +132,11 @@ function getMongodumpCMD(output) {
     cmd += ` --host ${config.host}`;  
   }
   
-  if (config.host) {
+  if (config.port) {
     cmd += ` --port ${config.port}`;
   }
 
-  if (config.host.includes('readPreference')) {
+  if (config.host.includes('rs')) {
     cmd += ` --readPreference secondaryPreferred`
   }
 
